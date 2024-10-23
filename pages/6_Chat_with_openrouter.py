@@ -2,6 +2,7 @@ from openai import OpenAI
 import streamlit as st
 
 with st.sidebar:
+    openrouter_api_key = st.text_input('OpenRouter API Key', key='openrouter_api_key', type='password')
     st.text_area('System Prompt', 
                 key='system_prompt',
                 placeholder='Enter your system prompt here...',
@@ -11,7 +12,7 @@ with st.sidebar:
 st.title("💬 OpenRouter Chatbot")
 st.caption("🚀 A Streamlit chatbot powered by OpenRouter.")
 
-openrouter_api_key = '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'
+# openrouter_api_key = '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'
 
 client = OpenAI(api_key=openrouter_api_key, base_url="https://openrouter.ai/api/v1")
 
@@ -26,7 +27,10 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-if prompt := st.chat_input("What is up?"):
+if prompt := st.chat_input("What's up?"):
+    if not openrouter_api_key:
+        st.info("Please add your OpenRouter API key to continue.")
+        st.stop()
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
